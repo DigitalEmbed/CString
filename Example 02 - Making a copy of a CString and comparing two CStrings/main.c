@@ -68,12 +68,16 @@ int main(void){
     Editing csString.
   */
   uint8_t ui8Sensor = 236;
-  ui8CStringPutData(&csString, csCharType("Sensor: "), csIntType(ui8Sensor), csCharType("\nSetPoint: "), csIntType(122));
+  if (ui8CStringPutData(&csString, csCharType("Sensor: "), csIntType(ui8Sensor), csCharType("\nSetPoint: "), csIntType(122)) != ALL_DATA_ADDED){
+    return 3;
+  }
 
   /*!
     Making a copy of csString.
   */
-  ui8CopyCString(&csCopyString, &csString);
+  if (ui8CopyCString(&csCopyString, &csString) != COPIED_STRING){
+    return 4;
+  }
 
   /*!
     Comparing the two CStrings.
