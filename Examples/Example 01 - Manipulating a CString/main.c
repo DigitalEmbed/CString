@@ -35,15 +35,13 @@
   to jorge_henrique_123@hotmail.com to talk.
 */
 
+#include <MemoryManager.h>
 #include <CString.h>
 
 /*!
   Main function.
 */
 int main(void){
-  vUSARTInit(USART_0);
-  vAttachPrintOutput(USART_0, &vUSARTSendByte);
-
   /*!
     Memory manager initialization.
   */
@@ -60,7 +58,7 @@ int main(void){
     Initializing CStrings.
   */
   uint8_t ui8StatusString = ui8CStringInit(&csString,           //Address of csString
-                                          50)                   //Max size of csString
+                                          50);                  //Max size of csString
 
   if (ui8StatusString != STRING_INITIALIZED){
     return 2;
@@ -83,7 +81,7 @@ int main(void){
 
   /*!
     Printing csString.
-  */  
+  */
   printf("%s", cpCStringToCharArray(&csString));
   printf("\n\nString max size: %d\nString size: %d\nString free space: %d", ui16GetCStringMaxSize(&csString), ui16GetCStringSize(&csString), ui16GetCStringFreeSpace(&csString));
   return 0;
