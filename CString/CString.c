@@ -17,7 +17,6 @@ uint8_t ui8CStringInit(cstring_t* cspString, uint16_t ui16MaxSize){
     return ERROR_NO_SPACE_ON_DATABANK;
   }
   memset(cspString->cpString, 0, sizeof(char)*(cspString->ui16MaxSize + 1));
-  cspString->ui16ActualPosition = 0;
   cspString->ui16StringSize = 0;
   return STRING_CREATED;
 }
@@ -36,7 +35,6 @@ uint8_t ui8CStringDelete(cstring_t* cspString){
   if (cspString->cpString == NULL){
     return ERROR_STRING_NOT_DEALLOCATED;
   }
-  cspString->ui16ActualPosition = 0;
   cspString->ui16MaxSize = 0;
   cspString->ui16StringSize = 0;
   return DELETED_STRING;
@@ -58,45 +56,44 @@ uint8_t (ui8CStringPutData)(cstring_t* cspString, int iAmountOfArguments, ...){
   va_start(vaMyArguments, iAmountOfArguments);
   int iType = 0;
   while (iAmountOfArguments--){
-    while(cspString->cpString[cspString->ui16ActualPosition] != 0){
-      if (cspString->ui16ActualPosition == cspString->ui16MaxSize){
+    while(cspString->cpString[cspString->ui16StringSize] != 0){
+      if (cspString->ui16StringSize == cspString->ui16MaxSize){
         return ERROR_NO_SPACE_IN_STRING;
       }
-      cspString->ui16ActualPosition++;
+      cspString->ui16StringSize++;
     }
     iType = va_arg(vaMyArguments, int);
     switch (iType){
       case INT_TYPE:
-        if (snprintf((char*) (cspString->cpString + cspString->ui16ActualPosition), cspString->ui16MaxSize - cspString->ui16ActualPosition + 1, "%d", va_arg(vaMyArguments, int)) < 0){
+        if (snprintf((char*) (cspString->cpString + cspString->ui16StringSize), cspString->ui16MaxSize - cspString->ui16StringSize + 1, "%d", va_arg(vaMyArguments, int)) < 0){
           return ERROR_TRUNCATED_STRING;
         }
         break;
       case OCTAL_TYPE:
-        if (snprintf((char*) (cspString->cpString + cspString->ui16ActualPosition), cspString->ui16MaxSize - cspString->ui16ActualPosition + 1, "%o", va_arg(vaMyArguments, int)) < 0){
+        if (snprintf((char*) (cspString->cpString + cspString->ui16StringSize), cspString->ui16MaxSize - cspString->ui16StringSize + 1, "%o", va_arg(vaMyArguments, int)) < 0){
           return ERROR_TRUNCATED_STRING;
         }
         break;
       case HEX_TYPE:
-        if (snprintf((char*) (cspString->cpString + cspString->ui16ActualPosition), cspString->ui16MaxSize - cspString->ui16ActualPosition + 1, "%x", va_arg(vaMyArguments, int)) < 0){
+        if (snprintf((char*) (cspString->cpString + cspString->ui16StringSize), cspString->ui16MaxSize - cspString->ui16StringSize + 1, "%x", va_arg(vaMyArguments, int)) < 0){
           return ERROR_TRUNCATED_STRING;
         }
         break;
       case CHAR_TYPE:
-        if (snprintf((char*) (cspString->cpString + cspString->ui16ActualPosition), cspString->ui16MaxSize - cspString->ui16ActualPosition + 1, "%s", va_arg(vaMyArguments, char*)) < 0){
+        if (snprintf((char*) (cspString->cpString + cspString->ui16StringSize), cspString->ui16MaxSize - cspString->ui16StringSize + 1, "%s", va_arg(vaMyArguments, char*)) < 0){
           return ERROR_TRUNCATED_STRING;
         }
         break;
       case FLOAT_TYPE:
-        if (snprintf((char*) (cspString->cpString + cspString->ui16ActualPosition), cspString->ui16MaxSize - cspString->ui16ActualPosition + 1, "%.2f", va_arg(vaMyArguments, double)) < 0){
+        if (snprintf((char*) (cspString->cpString + cspString->ui16StringSize), cspString->ui16MaxSize - cspString->ui16StringSize + 1, "%.2f", va_arg(vaMyArguments, double)) < 0){
           return ERROR_TRUNCATED_STRING;
         }
         break;
     }
   }
-  while(cspString->cpString[cspString->ui16ActualPosition] != 0){
-    cspString->ui16ActualPosition++;
+  while(cspString->cpString[cspString->ui16StringSize] != 0){
+    cspString->ui16StringSize++;
   }
-  cspString->ui16StringSize = cspString->ui16ActualPosition;
   va_end(vaMyArguments);
   return ALL_DATA_ADDED;
 }
@@ -131,11 +128,12 @@ uint8_t ui8CopyCString(cstring_t* cspDestinyString, cstring_t* cspOriginString){
   if (cspDestinyString == NULL || cspOriginString == NULL  || cspDestinyString->cpString == NULL  || cspOriginString->cpString == NULL){
     return ERROR_STRING_NOT_CREATED;
   }
-  if (cspDestinyString->ui16MaxSize <= cspOriginString->ui16StringSize){
+  if (cspOriginString->ui16MaxSize <= cspDestinyString->ui16StringSize){
     return ERROR_NO_SPACE_IN_STRING;
   }
   memset(cspDestinyString->cpString, 0, cspDestinyString->ui16StringSize);
   memcpy(cspDestinyString->cpString, cspOriginString->cpString, cspOriginString->ui16StringSize);
+  cspDestinyString->ui16StringSize = strlen(cspDestinyString->cpString);
   return COPIED_STRING;
 }
 
@@ -151,7 +149,6 @@ uint8_t ui8EraseCString(cstring_t* cspString){
   }
   memset(cspString->cpString, 0, cspString->ui16StringSize);
   cspString->ui16StringSize = 0;
-  cspString->ui16ActualPosition = 0;
   return ERASED_STRING;
 }
 
