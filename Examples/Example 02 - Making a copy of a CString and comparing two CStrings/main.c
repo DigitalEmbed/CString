@@ -36,6 +36,7 @@
   to jorge_henrique_123@hotmail.com to talk.
 */
 
+#include <MemoryManager.h>
 #include <CString.h>
 
 /*!
