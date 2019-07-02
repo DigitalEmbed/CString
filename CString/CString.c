@@ -101,45 +101,6 @@ uint8_t (ui8CStringPutData)(cstring_t* cspString, int iAmountOfArguments, ...){
   return ALL_DATA_ADDED;
 }
 
-//! Function: CString Free Space Getter
-/*!
-  Get CString free scpace.
-  \param cspString is a cstring_t pointer.
-  \return Returns the free space of CString or ERROR_STRING_NOT_CREATED.
-*/
-uint8_t ui8GetCStringFreeSpace(cstring_t* cspString){
-  if (cspString == NULL || cspString->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
-  }
-  return cspString->ui16MaxSize - cspString->ui16StringSize;
-}
-
-//! Function: CString Max Space Getter
-/*!
-  Get CString max scpace.
-  \param cspString is a cstring_t pointer.
-  \return Returns the max space of CString or ERROR_STRING_NOT_CREATED.
-*/
-uint8_t ui8GetCStringMaxSize(cstring_t* cspString){
-  if (cspString == NULL || cspString->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
-  }
-  return cspString->ui16MaxSize;
-}
-
-//! Function: CString Size Getter
-/*!
-  Get CString size.
-  \param cspString is a cstring_t pointer.
-  \return Returns the size of CString or ERROR_STRING_NOT_CREATED.
-*/
-uint8_t ui8GetCStringSize(cstring_t* cspString){
-  if (cspString == NULL || cspString->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
-  }
-  return cspString->ui16StringSize;
-}
-
 //! Function: CString Comparer
 /*!
   Compare two strings.
@@ -192,6 +153,45 @@ uint8_t ui8EraseCString(cstring_t* cspString){
   cspString->ui16StringSize = 0;
   cspString->ui16ActualPosition = 0;
   return ERASED_STRING;
+}
+
+//! Function: CString Free Space Getter
+/*!
+  Get CString free scpace.
+  \param cspString is a cstring_t pointer.
+  \return Returns the free space of CString or ERROR_STRING_NOT_CREATED.
+*/
+uint16_t ui16GetCStringFreeSpace(cstring_t* cspString){
+  if (cspString == NULL || cspString->cpString == NULL){
+    return ERROR_STRING_NOT_CREATED;
+  }
+  return cspString->ui16MaxSize - cspString->ui16StringSize;
+}
+
+//! Function: CString Max Space Getter
+/*!
+  Get CString max scpace.
+  \param cspString is a cstring_t pointer.
+  \return Returns the max space of CString or ERROR_STRING_NOT_CREATED.
+*/
+uint16_t ui16GetCStringMaxSize(cstring_t* cspString){
+  if (cspString == NULL || cspString->cpString == NULL){
+    return ERROR_STRING_NOT_CREATED;
+  }
+  return cspString->ui16MaxSize;
+}
+
+//! Function: CString Size Getter
+/*!
+  Get CString size.
+  \param cspString is a cstring_t pointer.
+  \return Returns the size of CString or ERROR_STRING_NOT_CREATED.
+*/
+uint16_t ui16GetCStringSize(cstring_t* cspString){
+  if (cspString == NULL || cspString->cpString == NULL){
+    return ERROR_STRING_NOT_CREATED;
+  }
+  return cspString->ui16StringSize;
 }
 
 //! Function: CString Converter (To char array)

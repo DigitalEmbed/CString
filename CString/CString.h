@@ -96,12 +96,12 @@ typedef struct{
 uint8_t ui8CStringInit(cstring_t* cspString, uint16_t ui16MaxSize);                       /*!< 8-bits integer type function. */
 uint8_t ui8CStringDelete(cstring_t* cspString);                                           /*!< 8-bits integer type function. */
 uint8_t (ui8CStringPutData)(cstring_t* cspString, int iAmountOfArguments, ...);           /*!< 8-bits integer type function. */
-uint8_t ui8GetCStringFreeSpace(cstring_t* cspString);                                     /*!< 8-bits integer type function. */
-uint8_t ui8GetCStringMaxSize(cstring_t* cspString);                                       /*!< 8-bits integer type function. */
-uint8_t ui8GetCStringSize(cstring_t* cspString);                                          /*!< 8-bits integer type function. */
 uint8_t ui8CompareCStrings(cstring_t* cspStringA, cstring_t* cspStringB);                 /*!< 8-bits integer type function. */
 uint8_t ui8CopyCString(cstring_t* cspDestinyString, cstring_t* cspOriginString);          /*!< 8-bits integer type function. */
 uint8_t ui8EraseCString(cstring_t* cspString);                                            /*!< 8-bits integer type function. */
+uint16_t ui16GetCStringFreeSpace(cstring_t* cspString);                                   /*!< 16-bits integer type function. */
+uint16_t ui16GetCStringMaxSize(cstring_t* cspString);                                     /*!< 16-bits integer type function. */
+uint16_t ui16GetCStringSize(cstring_t* cspString);                                        /*!< 16-bits integer type function. */
 char* cpCStringToCharArray(cstring_t* cspString);                                         /*!< 8-bits integer type function. */
 char cCStringToChar(cstring_t* cspString, uint16_t ui16Position);                         /*!< 8-bits integer type function. */
 
