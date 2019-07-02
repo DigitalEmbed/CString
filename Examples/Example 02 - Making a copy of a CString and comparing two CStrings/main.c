@@ -58,7 +58,7 @@ int main(void){
   /*!
     Initializing CStrings.
   */
-  if (ui8CStringInit(&csString, 30) != STRING_CREATED || ui8CStringInit(&csCopyString, 26)  != STRING_CREATED){
+  if (ui8CStringInit(&csString, 30) != STRING_INITIALIZED || ui8CStringInit(&csCopyString, 26)  != STRING_INITIALIZED){
     return 2;
   }
 
