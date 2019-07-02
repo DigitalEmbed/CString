@@ -36,8 +36,6 @@
   to jorge_henrique_123@hotmail.com to talk.
 */
 
-#include <HALru.h>
-#include <jOS.h>
 #include <CString.h>
 
 /*!
