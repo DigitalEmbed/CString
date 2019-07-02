@@ -82,7 +82,7 @@ int main(void){
   */
   if (ui8CompareCStrings(&csString, &csCopyString) == IDENTICAL_STRINGS){
     printf("%s", cpCStringToCharArray(&csString));
-    printf("\n\nString size: %d", ui16GetCStringSize(&csString));
+    printf("\n\nString max size: %d\nString size: %d\nString free space: %d", ui16GetCStringMaxSize(&csString), ui16GetCStringSize(&csString), ui16GetCStringFreeSpace(&csString));
   }
 
   return 0;
