@@ -50,39 +50,46 @@ int main(void){
   }
 
   /*!
-    Creating CStrings.
+    Creating Strings.
   */
-  xCStringCreate(csString);
+  xStringCreate(sString);
 
   /*!
-    Initializing CStrings.
+    Initializing Strings.
   */
-  uint8_t ui8StatusString = ui8CStringInit(&csString,           //Address of csString
-                                          50);                  //Max size of csString
+  uint8_t ui8StatusString = ui8StringInit(&sString,             //Address of sString
+                                          50);                  //Max size of sString
 
   if (ui8StatusString != STRING_INITIALIZED){
     return 2;
   }
 
   /*!
-    Editing csString.
+    Editing sString.
   */
   uint8_t ui8SensorA = 236;
   uint8_t ui8SensorB = 178;
-  if (ui8CStringPutData(&csString, csCharType("SensorA: "), csIntType(ui8SensorA)) != ALL_DATA_ADDED){
+  uint8_t ui8SetPoint = 2*(ui8SensorA - ui8SensorB);
+
+  /*!
+    Adding data on sString like sprintf function...
+  */
+  if (ui8StringPrintf(&sString, "SensorA:  %d\nSensorB:  %d", ui8SensorA, ui8SensorB) != ALL_DATA_ADDED){
     return 3;
-  }
-  if (ui8CStringPutData(&csString, csCharType("SensorB: "), csIntType(ui8SensorB)) != ALL_DATA_ADDED){
-    return 4;
-  }
-  if (ui8CStringPutData(&csString, csCharType("\nSetPoint: "), csIntType(122)) != ALL_DATA_ADDED){
-    return 5;
   }
 
   /*!
-    Printing csString.
+    Adding data on sString like c++ string function...
+    (C++) sString = "\nSetPoint: " + ui8SetPoint;
   */
-  printf("%s", cpCStringToCharArray(&csString));
-  printf("\n\nString max size: %d\nString size: %d\nString free space: %d", ui16GetCStringMaxSize(&csString), ui16GetCStringSize(&csString), ui16GetCStringFreeSpace(&csString));
+  if (ui8StringAdd(&sString, csCharType("\nSetPoint: "), csIntType(ui8SetPoint)) != ALL_DATA_ADDED){
+    return 4;
+  }
+
+  /*!
+    Printing sString.
+  */
+  printf("%s", cpStringToCharArray(&sString));
+  printf("\n\nString max size: %d\nString size: %d\nString free space: %d", ui16GetStringMaxSize(&sString), ui16GetStringSize(&sString), ui16GetStringFreeSpace(&sString));
   return 0;
 }
