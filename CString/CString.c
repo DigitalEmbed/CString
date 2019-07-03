@@ -102,13 +102,15 @@ uint8_t (ui8StringAdd)(string_t* spString, int iAmountOfArguments, ...){
 /*!
   This function is similar to sprintf().
   \param spString is a string_t pointer.
-  \param iAmountOfArguments is a int type argument. You must be ignore this argument. See the examples.
-  \param ... is anything. You must be use csIntType(), csFloatType(), csCharType(), csOctalType() or csHexType() in these arguments.
+  \param ... is anything. Is the arguments of "sprintf()".
   \return Returns ERROR_STRING_NOT_INITIALIZED, ERROR_NO_SPACE_IN_STRING, ERROR_TRUNCATED_STRING or ALL_DATA_ADDED.
 */
 uint8_t ui8StringPrintf(string_t* spString, const char* cpCharArray, ...){
   if (spString == NULL || spString->cpString == NULL){
     return ERROR_STRING_NOT_INITIALIZED;
+  }
+  if (spString->ui16StringSize == spString->ui16MaxSize){
+    return ERROR_NO_SPACE_IN_STRING;
   }
   va_list vaMyArguments;
   va_start(vaMyArguments, cpCharArray);
