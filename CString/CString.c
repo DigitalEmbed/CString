@@ -1,222 +1,246 @@
 #include "CString.h"
 
-//! Function: CString Inititalizer
+//! Function: String Inititalizer
 /*!
-  Initialize a CString.
-  \param cspString is a cstring_t pointer.
-  \param ui16MaxSize is a 16-Bit integer. This parameter refers to the max size of cspString.
-  \return Returns ERROR_STRING_NOT_CREATED, ERROR_NO_SPACE_ON_DATABANK or STRING_CREATED.
+  Initialize a String.
+  \param spString is a string_t pointer.
+  \param ui16MaxSize is a 16-Bit integer. This parameter refers to the max size of spString.
+  \return Returns ERROR_STRING_NOT_INITIALIZED, ERROR_NO_SPACE_ON_DATABANK or STRING_INITIALIZED.
 */
-uint8_t ui8CStringInit(cstring_t* cspString, uint16_t ui16MaxSize){
-  if (cspString == NULL || ui16MaxSize < 2 || cspString->cpString != NULL){
-    return ERROR_STRING_NOT_CREATED;
+uint8_t ui8StringInit(string_t* spString, uint16_t ui16MaxSize){
+  if (spString == NULL || ui16MaxSize < 2 || spString->cpString != NULL){
+    return ERROR_STRING_NOT_INITIALIZED;
   }
-  cspString->ui16MaxSize = ui16MaxSize;
-  cspString->cpString = (char*) vpDBAlloc(sizeof(char), ui16MaxSize + 1);
-  if (cspString->cpString == NULL){
+  spString->ui16MaxSize = ui16MaxSize;
+  spString->cpString = (char*) vpDBAlloc(sizeof(char), ui16MaxSize + 1);
+  if (spString->cpString == NULL){
     return ERROR_NO_SPACE_ON_DATABANK;
   }
-  memset(cspString->cpString, 0, sizeof(char)*(cspString->ui16MaxSize + 1));
-  cspString->ui16StringSize = 0;
-  return STRING_CREATED;
+  memset(spString->cpString, 0, sizeof(char)*(spString->ui16MaxSize + 1));
+  spString->ui16StringSize = 0;
+  return STRING_INITIALIZED;
 }
 
-//! Function: CString Deleter
+//! Function: String Deleter
 /*!
-  Delete a CString.
-  \param cspString is a cstring_t pointer.
-  \return Returns ERROR_STRING_NOT_CREATED, ERROR_STRING_NOT_DEALLOCATED or DELETED_STRING.
+  Delete a String.
+  \param spString is a string_t pointer.
+  \return Returns ERROR_STRING_NOT_INITIALIZED, ERROR_STRING_NOT_DEALLOCATED or DELETED_STRING.
 */
-uint8_t ui8CStringDelete(cstring_t* cspString){
-  if (cspString == NULL || cspString->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
+uint8_t ui8StringDelete(string_t* spString){
+  if (spString == NULL || spString->cpString == NULL){
+    return ERROR_STRING_NOT_INITIALIZED;
   }
-  vDBFree(&(cspString->cpString), sizeof(char), cspString->ui16MaxSize + 1);
-  if (cspString->cpString == NULL){
+  vDBFree(&(spString->cpString), sizeof(char), spString->ui16MaxSize + 1);
+  if (spString->cpString == NULL){
     return ERROR_STRING_NOT_DEALLOCATED;
   }
-  cspString->ui16MaxSize = 0;
-  cspString->ui16StringSize = 0;
+  spString->ui16MaxSize = 0;
+  spString->ui16StringSize = 0;
   return DELETED_STRING;
 }
 
-//! Function: CString Data Attacher
+//! Function: String Data Attacher
 /*!
-  Put a data into CString.
-  \param cspString is a cstring_t pointer.
+  Put a data into String. Is similar to "+" in C++.
+  \param spString is a string_t pointer.
   \param iAmountOfArguments is a int type argument. You must be ignore this argument. See the examples.
   \param ... is anything. You must be use csIntType(), csFloatType(), csCharType(), csOctalType() or csHexType() in these arguments.
-  \return Returns ERROR_STRING_NOT_CREATED, ERROR_NO_SPACE_IN_STRING, ERROR_TRUNCATED_STRING or ALL_DATA_ADDED.
+  \return Returns ERROR_STRING_NOT_INITIALIZED, ERROR_NO_SPACE_IN_STRING, ERROR_TRUNCATED_STRING or ALL_DATA_ADDED.
 */
-uint8_t (ui8CStringPutData)(cstring_t* cspString, int iAmountOfArguments, ...){
-  if (cspString == NULL || cspString->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
+uint8_t (ui8StringAdd)(string_t* spString, int iAmountOfArguments, ...){
+  if (spString == NULL || spString->cpString == NULL){
+    return ERROR_STRING_NOT_INITIALIZED;
   }
   va_list vaMyArguments;
   va_start(vaMyArguments, iAmountOfArguments);
   int iType = 0;
   while (iAmountOfArguments--){
-    while(cspString->cpString[cspString->ui16StringSize] != 0){
-      if (cspString->ui16StringSize == cspString->ui16MaxSize){
+    while(spString->cpString[spString->ui16StringSize] != 0){
+      if (spString->ui16StringSize == spString->ui16MaxSize){
         return ERROR_NO_SPACE_IN_STRING;
       }
-      cspString->ui16StringSize++;
+      spString->ui16StringSize++;
     }
     iType = va_arg(vaMyArguments, int);
     switch (iType){
       case INT_TYPE:
-        if (snprintf((char*) (cspString->cpString + cspString->ui16StringSize), cspString->ui16MaxSize - cspString->ui16StringSize + 1, "%d", va_arg(vaMyArguments, int)) < 0){
+        if (snprintf((char*) (spString->cpString + spString->ui16StringSize), spString->ui16MaxSize - spString->ui16StringSize + 1, "%d", va_arg(vaMyArguments, int)) < 0){
           return ERROR_TRUNCATED_STRING;
         }
         break;
       case OCTAL_TYPE:
-        if (snprintf((char*) (cspString->cpString + cspString->ui16StringSize), cspString->ui16MaxSize - cspString->ui16StringSize + 1, "%o", va_arg(vaMyArguments, int)) < 0){
+        if (snprintf((char*) (spString->cpString + spString->ui16StringSize), spString->ui16MaxSize - spString->ui16StringSize + 1, "%o", va_arg(vaMyArguments, int)) < 0){
           return ERROR_TRUNCATED_STRING;
         }
         break;
       case HEX_TYPE:
-        if (snprintf((char*) (cspString->cpString + cspString->ui16StringSize), cspString->ui16MaxSize - cspString->ui16StringSize + 1, "%x", va_arg(vaMyArguments, int)) < 0){
+        if (snprintf((char*) (spString->cpString + spString->ui16StringSize), spString->ui16MaxSize - spString->ui16StringSize + 1, "%x", va_arg(vaMyArguments, int)) < 0){
           return ERROR_TRUNCATED_STRING;
         }
         break;
       case CHAR_TYPE:
-        if (snprintf((char*) (cspString->cpString + cspString->ui16StringSize), cspString->ui16MaxSize - cspString->ui16StringSize + 1, "%s", va_arg(vaMyArguments, char*)) < 0){
+        if (snprintf((char*) (spString->cpString + spString->ui16StringSize), spString->ui16MaxSize - spString->ui16StringSize + 1, "%s", va_arg(vaMyArguments, char*)) < 0){
           return ERROR_TRUNCATED_STRING;
         }
         break;
       case FLOAT_TYPE:
-        if (snprintf((char*) (cspString->cpString + cspString->ui16StringSize), cspString->ui16MaxSize - cspString->ui16StringSize + 1, "%.2f", va_arg(vaMyArguments, double)) < 0){
+        if (snprintf((char*) (spString->cpString + spString->ui16StringSize), spString->ui16MaxSize - spString->ui16StringSize + 1, "%.2f", va_arg(vaMyArguments, double)) < 0){
           return ERROR_TRUNCATED_STRING;
         }
         break;
     }
   }
-  while(cspString->cpString[cspString->ui16StringSize] != 0){
-    cspString->ui16StringSize++;
+  while(spString->cpString[spString->ui16StringSize] != 0){
+    spString->ui16StringSize++;
   }
   va_end(vaMyArguments);
   return ALL_DATA_ADDED;
 }
 
-//! Function: CString Comparer
+//! Function: String Data Attacher
+/*!
+  This function is similar to sprintf().
+  \param spString is a string_t pointer.
+  \param iAmountOfArguments is a int type argument. You must be ignore this argument. See the examples.
+  \param ... is anything. You must be use csIntType(), csFloatType(), csCharType(), csOctalType() or csHexType() in these arguments.
+  \return Returns ERROR_STRING_NOT_INITIALIZED, ERROR_NO_SPACE_IN_STRING, ERROR_TRUNCATED_STRING or ALL_DATA_ADDED.
+*/
+uint8_t ui8StringPrintf(string_t* spString, const char* cpCharArray, ...){
+  if (spString == NULL || spString->cpString == NULL){
+    return ERROR_STRING_NOT_INITIALIZED;
+  }
+  va_list vaMyArguments;
+  va_start(vaMyArguments, cpCharArray);
+  if (vsnprintf((char*) (spString->cpString + spString->ui16StringSize), spString->ui16MaxSize - spString->ui16StringSize + 1, cpCharArray, vaMyArguments) < 0){
+    return ERROR_TRUNCATED_STRING;
+  }
+  while(spString->cpString[spString->ui16StringSize] != 0){
+    spString->ui16StringSize++;
+  }
+  va_end(vaMyArguments);
+  return ALL_DATA_ADDED;
+}
+
+//! Function: String Comparer
 /*!
   Compare two strings.
-  \param cspStringA is a cstring_t pointer.
-  \param cspStringB is a cstring_t pointer.
-  \return Returns ERROR_STRING_NOT_CREATED, DIFFERENT_STRINGS or IDENTICAL_STRINGS.
+  \param spStringA is a string_t pointer.
+  \param spStringB is a string_t pointer.
+  \return Returns ERROR_STRING_NOT_INITIALIZED, DIFFERENT_STRINGS or IDENTICAL_STRINGS.
 */
-uint8_t ui8CompareCStrings(cstring_t* cspStringA, cstring_t* cspStringB){
-  if (cspStringA == NULL || cspStringB == NULL || cspStringA->cpString == NULL || cspStringB->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
+uint8_t ui8CompareStrings(string_t* spStringA, string_t* spStringB){
+  if (spStringA == NULL || spStringB == NULL || spStringA->cpString == NULL || spStringB->cpString == NULL){
+    return ERROR_STRING_NOT_INITIALIZED;
   }
-  if (cspStringA->ui16StringSize != cspStringB->ui16StringSize){
+  if (spStringA->ui16StringSize != spStringB->ui16StringSize){
     return DIFFERENT_STRINGS;
   }
-  if (strncmp(cspStringA->cpString, cspStringB->cpString, cspStringA->ui16StringSize) != 0){
+  if (strncmp(spStringA->cpString, spStringB->cpString, spStringA->ui16StringSize) != 0){
     return DIFFERENT_STRINGS;
   }
   return IDENTICAL_STRINGS;
 }
 
-//! Function: CString Size Copier
+//! Function: String Size Copier
 /*!
-  Copy a CString.
-  \param cspString is a cstring_t pointer.
-  \return Returns ERROR_STRING_NOT_CREATED, ERROR_NO_SPACE_IN_STRING or COPIED_STRING.
+  Copy a String.
+  \param spString is a string_t pointer.
+  \return Returns ERROR_STRING_NOT_INITIALIZED, ERROR_NO_SPACE_IN_STRING or COPIED_STRING.
 */
-uint8_t ui8CopyCString(cstring_t* cspDestinyString, cstring_t* cspOriginString){
-  if (cspDestinyString == NULL || cspOriginString == NULL  || cspDestinyString->cpString == NULL  || cspOriginString->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
+uint8_t ui8CopyString(string_t* spDestinyString, string_t* spOriginString){
+  if (spDestinyString == NULL || spOriginString == NULL  || spDestinyString->cpString == NULL  || spOriginString->cpString == NULL){
+    return ERROR_STRING_NOT_INITIALIZED;
   }
-  if (cspOriginString->ui16MaxSize <= cspDestinyString->ui16StringSize){
+  if (spOriginString->ui16MaxSize <= spDestinyString->ui16StringSize){
     return ERROR_NO_SPACE_IN_STRING;
   }
-  memset(cspDestinyString->cpString, 0, cspDestinyString->ui16StringSize);
-  memcpy(cspDestinyString->cpString, cspOriginString->cpString, cspOriginString->ui16StringSize);
-  cspDestinyString->ui16StringSize = strlen(cspDestinyString->cpString);
+  memset(spDestinyString->cpString, 0, spDestinyString->ui16StringSize);
+  memcpy(spDestinyString->cpString, spOriginString->cpString, spOriginString->ui16StringSize);
+  spDestinyString->ui16StringSize = strlen(spDestinyString->cpString);
   return COPIED_STRING;
 }
 
-//! Function: CString Size Eraser
+//! Function: String Size Eraser
 /*!
-  Erase a CString.
-  \param cspString is a cstring_t pointer.
-  \return Returns ERROR_STRING_NOT_CREATED or ERASED_STRING.
+  Erase a String.
+  \param spString is a string_t pointer.
+  \return Returns ERROR_STRING_NOT_INITIALIZED or ERASED_STRING.
 */
-uint8_t ui8EraseCString(cstring_t* cspString){
-  if (cspString == NULL || cspString->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
+uint8_t ui8EraseString(string_t* spString){
+  if (spString == NULL || spString->cpString == NULL){
+    return ERROR_STRING_NOT_INITIALIZED;
   }
-  memset(cspString->cpString, 0, cspString->ui16StringSize);
-  cspString->ui16StringSize = 0;
+  memset(spString->cpString, 0, spString->ui16StringSize);
+  spString->ui16StringSize = 0;
   return ERASED_STRING;
 }
 
-//! Function: CString Free Space Getter
+//! Function: String Free Space Getter
 /*!
-  Get CString free scpace.
-  \param cspString is a cstring_t pointer.
-  \return Returns the free space of CString or ERROR_STRING_NOT_CREATED.
+  Get String free scpace.
+  \param spString is a string_t pointer.
+  \return Returns the free space of String or ERROR_STRING_NOT_INITIALIZED.
 */
-uint16_t ui16GetCStringFreeSpace(cstring_t* cspString){
-  if (cspString == NULL || cspString->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
+uint16_t ui16GetStringFreeSpace(string_t* spString){
+  if (spString == NULL || spString->cpString == NULL){
+    return ERROR_STRING_NOT_INITIALIZED;
   }
-  return cspString->ui16MaxSize - cspString->ui16StringSize;
+  return spString->ui16MaxSize - spString->ui16StringSize;
 }
 
-//! Function: CString Max Space Getter
+//! Function: String Max Space Getter
 /*!
-  Get CString max scpace.
-  \param cspString is a cstring_t pointer.
-  \return Returns the max space of CString or ERROR_STRING_NOT_CREATED.
+  Get String max scpace.
+  \param spString is a string_t pointer.
+  \return Returns the max space of String or ERROR_STRING_NOT_INITIALIZED.
 */
-uint16_t ui16GetCStringMaxSize(cstring_t* cspString){
-  if (cspString == NULL || cspString->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
+uint16_t ui16GetStringMaxSize(string_t* spString){
+  if (spString == NULL || spString->cpString == NULL){
+    return ERROR_STRING_NOT_INITIALIZED;
   }
-  return cspString->ui16MaxSize;
+  return spString->ui16MaxSize;
 }
 
-//! Function: CString Size Getter
+//! Function: String Size Getter
 /*!
-  Get CString size.
-  \param cspString is a cstring_t pointer.
-  \return Returns the size of CString or ERROR_STRING_NOT_CREATED.
+  Get String size.
+  \param spString is a string_t pointer.
+  \return Returns the size of String or ERROR_STRING_NOT_INITIALIZED.
 */
-uint16_t ui16GetCStringSize(cstring_t* cspString){
-  if (cspString == NULL || cspString->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
+uint16_t ui16GetStringSize(string_t* spString){
+  if (spString == NULL || spString->cpString == NULL){
+    return ERROR_STRING_NOT_INITIALIZED;
   }
-  return cspString->ui16StringSize;
+  return spString->ui16StringSize;
 }
 
-//! Function: CString Converter (To char array)
+//! Function: String Converter (To char array)
 /*!
-  Convert a CString to char array.
-  \param cspString is a cstring_t pointer.
-  \return Returns the char array or NULL, case cspString is NULL.
+  Convert a String to char array.
+  \param spString is a string_t pointer.
+  \return Returns the char array or NULL, case spString is NULL.
 */
-char* cpCStringToCharArray(cstring_t* cspString){
-  if (cspString == NULL || cspString->cpString == NULL){
+char* cpStringToCharArray(string_t* spString){
+  if (spString == NULL || spString->cpString == NULL){
     return NULL;
   }
-  return cspString->cpString;
+  return spString->cpString;
 }
 
-//! Function: CString Converter (To char)
+//! Function: String Converter (To char)
 /*!
-  Get a CString char.
-  \param cspString is a cstring_t pointer.
+  Get a String char.
+  \param spString is a string_t pointer.
   \param ui16Position is a 16-Bit integer.
   \return Returns the char or 0 when errors occours.
 */
-char cCStringToChar(cstring_t* cspString, uint16_t ui16Position){
-  if (cspString == NULL || cspString->cpString == NULL){
-    return ERROR_STRING_NOT_CREATED;
+char cStringToChar(string_t* spString, uint16_t ui16Position){
+  if (spString == NULL || spString->cpString == NULL){
+    return ERROR_STRING_NOT_INITIALIZED;
   }
-  if (ui16Position >= cspString->ui16StringSize){
+  if (ui16Position >= spString->ui16StringSize){
     return 0;
   }
-  return cspString->cpString[ui16Position];
+  return spString->cpString[ui16Position];
 }

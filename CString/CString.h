@@ -40,13 +40,14 @@
 #endif
 
 #include <MemoryManager.h>
+#include <stdint.h>
 #include <stdarg.h>
 
 //! Macro: String Status
 /*!
   This macros are for facilitate the use of this library.
 */
-#define STRING_CREATED                          0
+#define STRING_INITIALIZED                      0
 #define ALL_DATA_ADDED                          2
 #define IDENTICAL_STRINGS                       4
 #define DIFFERENT_STRINGS                       5
@@ -55,7 +56,7 @@
 #define CONVERTED_STRING                        8
 #define DELETED_STRING                          9
 
-#define ERROR_STRING_NOT_CREATED                100
+#define ERROR_STRING_NOT_INITIALIZED            100
 #define ERROR_NO_SPACE_ON_DATABANK              101
 #define ERROR_NO_SPACE_IN_STRING                102
 #define ERROR_TRUNCATED_STRING                  103
@@ -72,37 +73,38 @@
 #define CHAR_TYPE                               4
 #define FLOAT_TYPE                              5
 
-#define csIntType                               INT_TYPE,
-#define csOctalType                             OCTAL_TYPE,
-#define csHexType                               HEX_TYPE,
-#define csCharType                              CHAR_TYPE, (int)
-#define csFloatType                             FLOAT_TYPE, (int)
+#define sIntType                                INT_TYPE,
+#define sOctalType                              OCTAL_TYPE,
+#define sHexType                                HEX_TYPE,
+#define sCharType                               CHAR_TYPE, (int)
+#define sFloatType                              FLOAT_TYPE, (int)
 
-#define ui8CStringPutData(cspString, ...)       ui8CStringPutData(cspString, sizeof((int []) {__VA_ARGS__}) / sizeof(int), __VA_ARGS__)
+#define ui8StringAdd(cspString, ...)            ui8StringAdd(cspString, sizeof((int []) {__VA_ARGS__}) / sizeof(int), __VA_ARGS__)
 
-#define xCStringCreate(csName)                  cstring_t csName = {NULL, 0, 0, 0}
+#define xStringCreate(csName)                   string_t csName = {NULL, 0, 0}
 
-//! Type Definition: CString Struct.
+//! Type Definition: String Struct.
 /*!
-  This struct creates a cstring "object".
+  This struct creates a string "object".
 */
 typedef struct{
   char* cpString;
   uint16_t ui16MaxSize;
   uint16_t ui16StringSize;
-}cstring_t;
+}string_t;
 
-uint8_t ui8CStringInit(cstring_t* cspString, uint16_t ui16MaxSize);                       /*!< 8-bits integer type function. */
-uint8_t ui8CStringDelete(cstring_t* cspString);                                           /*!< 8-bits integer type function. */
-uint8_t (ui8CStringPutData)(cstring_t* cspString, int iAmountOfArguments, ...);           /*!< 8-bits integer type function. */
-uint8_t ui8CompareCStrings(cstring_t* cspStringA, cstring_t* cspStringB);                 /*!< 8-bits integer type function. */
-uint8_t ui8CopyCString(cstring_t* cspDestinyString, cstring_t* cspOriginString);          /*!< 8-bits integer type function. */
-uint8_t ui8EraseCString(cstring_t* cspString);                                            /*!< 8-bits integer type function. */
-uint16_t ui16GetCStringFreeSpace(cstring_t* cspString);                                   /*!< 16-bits integer type function. */
-uint16_t ui16GetCStringMaxSize(cstring_t* cspString);                                     /*!< 16-bits integer type function. */
-uint16_t ui16GetCStringSize(cstring_t* cspString);                                        /*!< 16-bits integer type function. */
-char* cpCStringToCharArray(cstring_t* cspString);                                         /*!< 8-bits integer type function. */
-char cCStringToChar(cstring_t* cspString, uint16_t ui16Position);                         /*!< 8-bits integer type function. */
+uint8_t ui8StringInit(string_t* cspString, uint16_t ui16MaxSize);                       /*!< 8-bits integer type function. */
+uint8_t ui8StringDelete(string_t* cspString);                                           /*!< 8-bits integer type function. */
+uint8_t (ui8StringAdd)(string_t* cspString, int iAmountOfArguments, ...);               /*!< 8-bits integer type function. */
+uint8_t ui8StringPrintf(string_t* cspString, const char* cpCharArray, ...);             /*!< 8-bits integer type function. */
+uint8_t ui8CompareStrings(string_t* cspStringA, string_t* cspStringB);                  /*!< 8-bits integer type function. */
+uint8_t ui8CopyString(string_t* cspDestinyString, string_t* cspOriginString);           /*!< 8-bits integer type function. */
+uint8_t ui8EraseString(string_t* cspString);                                            /*!< 8-bits integer type function. */
+uint16_t ui16GetStringFreeSpace(string_t* cspString);                                   /*!< 16-bits integer type function. */
+uint16_t ui16GetStringMaxSize(string_t* cspString);                                     /*!< 16-bits integer type function. */
+uint16_t ui16GetStringSize(string_t* cspString);                                        /*!< 16-bits integer type function. */
+char* cpStringToCharArray(string_t* cspString);                                         /*!< 8-bits integer type function. */
+char cStringToChar(string_t* cspString, uint16_t ui16Position);                         /*!< 8-bits integer type function. */
 
 #ifdef __cplusplus
   }
