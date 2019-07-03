@@ -89,7 +89,6 @@
 typedef struct{
   char* cpString;
   uint16_t ui16MaxSize;
-  uint16_t ui16ActualPosition;
   uint16_t ui16StringSize;
 }cstring_t;
 
