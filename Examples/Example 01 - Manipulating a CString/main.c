@@ -79,10 +79,10 @@ int main(void){
   }
 
   /*!
-    Adding data on sString like c++ string function...
+    Adding data on sString like C++ string function...
     (C++) sString = "\nSetPoint: " + ui8SetPoint;
   */
-  if (ui8StringAdd(&sString, csCharType("\nSetPoint: "), csIntType(ui8SetPoint)) != ALL_DATA_ADDED){
+  if (ui8StringAdd(&sString, sCharType("\nSetPoint: "), sIntType(ui8SetPoint)) != ALL_DATA_ADDED){
     return 4;
   }
 
